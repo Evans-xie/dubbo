@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.extension;
 
 /**
+ * // todo extensionFactory 也是通过spi搞出来的， 厉害
  * ExtensionFactory
  */
 @SPI

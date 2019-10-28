@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.utils;
 
 /**
+ * todo 为什么要设计成这样的单例缓存？直接一个字段作为缓存不香吗？
  * Helper Class for hold a value.
  */
 public class Holder<T> {

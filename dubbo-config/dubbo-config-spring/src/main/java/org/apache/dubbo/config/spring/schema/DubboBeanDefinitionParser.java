@@ -72,6 +72,12 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
     private final Class<?> beanClass;
     private final boolean required;
 
+    /**
+     * 当bean的id为空时， required指定是否为其构造id
+     *
+     * @param beanClass
+     * @param required
+     */
     public DubboBeanDefinitionParser(Class<?> beanClass, boolean required) {
         this.beanClass = beanClass;
         this.required = required;
@@ -79,10 +85,13 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
 
     @SuppressWarnings("unchecked")
     private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required) {
+        // 构造BeanDefinition
         RootBeanDefinition beanDefinition = new RootBeanDefinition();
+        // 设置bean的类
         beanDefinition.setBeanClass(beanClass);
         beanDefinition.setLazyInit(false);
         String id = element.getAttribute("id");
+        // 当id为空且required 为true时，进行beanName的构造
         if (StringUtils.isEmpty(id) && required) {
             String generatedBeanName = element.getAttribute("name");
             if (StringUtils.isEmpty(generatedBeanName)) {
@@ -102,6 +111,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
             }
         }
         if (StringUtils.isNotEmpty(id)) {
+            // 当用户自定义id 重复时
             if (parserContext.getRegistry().containsBeanDefinition(id)) {
                 throw new IllegalStateException("Duplicate spring bean id " + id);
             }
@@ -135,7 +145,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         }
         Set<String> props = new HashSet<>();
         ManagedMap parameters = null;
-        for (Method setter : beanClass.getMethods()) {
+        for (Method setter : beanClass.getMethods()) {// 通过***Config 去定义期望配置的值
             String name = setter.getName();
             if (name.length() > 3 && name.startsWith("set")
                     && Modifier.isPublic(setter.getModifiers())
